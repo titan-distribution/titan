@@ -14,8 +14,8 @@
 
 package core
 
-// Namespacer defines methods for working with registry namespaces.
-type Namespacer interface {
+// NamespaceBackend defines methods for working with registry namespaces.
+type NamespaceBackend interface {
 	NamespaceCreater
 	NamespaceDeleter
 	NamespaceGetter
@@ -23,8 +23,8 @@ type Namespacer interface {
 
 // NamespaceCreater defines methods for creating registry namespaces.
 type NamespaceCreater interface {
-	CreateNamespace(CreateNamespaceParams) error
-	CreateNamespaces([]CreateNamespaceParams) error
+	CreateNamespace(NamespaceConfig) error
+	CreateNamespaces([]NamespaceConfig) error
 }
 
 // NamespaceDeleter defines methods for deleting registry namespaces.
@@ -41,8 +41,8 @@ type NamespaceGetter interface {
 	GetAllNamespaces() (*[]Namespace, error)
 }
 
-// CreateNamespaceParams defines parameters for creating a registry namespace.
-type CreateNamespaceParams struct {
+// NamespaceConfig defines parameters for creating a registry namespace.
+type NamespaceConfig struct {
 	Name         string
 	StorageLimit uint64
 	RepoLimit    uint64
