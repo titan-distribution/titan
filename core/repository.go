@@ -48,6 +48,7 @@ type Repo struct {
 	StorageUsed  uint64
 	Labels       map[string]string
 	Status       string
+	Tags         []Tag
 }
 
 // RepoConfig defines parameters for creating a repository.
