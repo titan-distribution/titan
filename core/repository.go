@@ -56,6 +56,5 @@ type RepoConfig struct {
 	Name         string
 	Namespace    string
 	StorageLimit uint64
-	StorageUsed  uint64
 	Labels       map[string]string
 }
