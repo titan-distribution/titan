@@ -15,8 +15,6 @@
 package inmem
 
 import (
-	"strings"
-
 	"github.com/atlaskerr/titan/core"
 
 	"github.com/tidwall/buntdb"
@@ -48,13 +46,4 @@ func createNamespace(db *buntdb.DB, cfg core.NamespaceConfig) error {
 
 	db.Update(fn)
 	return nil
-}
-
-func join(elem ...string) string {
-	for _, e := range elem {
-		if e != "" {
-			return strings.Join(elem, ":")
-		}
-	}
-	return ""
 }

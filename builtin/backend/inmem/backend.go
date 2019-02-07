@@ -15,10 +15,21 @@
 package inmem
 
 import (
+	"strings"
+
 	"github.com/tidwall/buntdb"
 )
 
 // Backend implements the core.Backend interface.
 type Backend struct {
 	db *buntdb.DB
+}
+
+func join(elem ...string) string {
+	for _, e := range elem {
+		if e != "" {
+			return strings.Join(elem, ":")
+		}
+	}
+	return ""
 }
