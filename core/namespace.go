@@ -59,11 +59,13 @@ type NewNamespaceR struct {
 }
 
 // BatchNewNamespaceP is a wrapper around CreateNamespaceParams.
-type BatchNewNamespaceP []NewNamespaceP
+type BatchNewNamespaceP struct {
+	Namespaces []NewNamespaceP
+}
 
 // BatchNewNamespaceR defines the response returned from BatchNewNamespace.
 type BatchNewNamespaceR struct {
-	Error error
+	Errors []error
 }
 
 // NamespaceDeleter defines methods for deleting registry namespaces.
