@@ -20,24 +20,24 @@ import (
 	"github.com/tidwall/buntdb"
 )
 
-// CreateNamespace creates a registry namespace.
-func (b *Backend) CreateNamespace(cfg core.NamespaceConfig) error {
-	return createNamespace(b.db, cfg)
+// NewNamespace creates a registry namespace.
+func (b *Backend) NewNamespace(p core.NewNamespaceP) core.NewNamespaceR {
+	return newNamespace(b.db, p)
 }
 
-func createNamespace(db *buntdb.DB, cfg core.NamespaceConfig) error {
+func newNamespace(db *buntdb.DB, p core.NewNamespaceP) core.NewNamespaceR {
 	fields := make(map[string]string)
-	fields["storage-limit"] = string(cfg.StorageLimit)
-	fields["repo-limit"] = string(cfg.RepoLimit)
+	fields["storage-limit"] = string(p.StorageLimit)
+	fields["repo-limit"] = string(p.RepoLimit)
 
-	for k, v := range cfg.Labels {
+	for k, v := range p.Labels {
 		key := join("label", k)
 		fields[key] = v
 	}
 
 	fn := func(tx *buntdb.Tx) error {
 		for k, v := range fields {
-			fullKey := join("namespace", cfg.Name, k)
+			fullKey := join("namespace", p.Name, k)
 			tx.Set(fullKey, v, nil)
 		}
 
@@ -45,5 +45,7 @@ func createNamespace(db *buntdb.DB, cfg core.NamespaceConfig) error {
 	}
 
 	db.Update(fn)
-	return nil
+	return core.NewNamespaceR{Error: nil}
 }
+
+//func batchCreateNamespace(db *buntdb.DB, cfgs []core.NamespaceConfig)

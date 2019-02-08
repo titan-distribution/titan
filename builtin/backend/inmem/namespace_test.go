@@ -22,7 +22,7 @@ import (
 	"github.com/tidwall/buntdb"
 )
 
-func TestCreateNamespace(t *testing.T) {
+func TestNewNamespace(t *testing.T) {
 	db, err := buntdb.Open(":memory:")
 	if err != nil {
 		t.Fatal("could not open database")
@@ -30,7 +30,7 @@ func TestCreateNamespace(t *testing.T) {
 
 	backend := Backend{db: db}
 
-	nsConf := core.NamespaceConfig{
+	params := core.NewNamespaceP{
 		Name:         "test-ns",
 		StorageLimit: 1234567,
 		RepoLimit:    50,
@@ -41,5 +41,5 @@ func TestCreateNamespace(t *testing.T) {
 		},
 	}
 
-	backend.CreateNamespace(nsConf)
+	backend.NewNamespace(params)
 }
