@@ -32,6 +32,34 @@ func (e ErrNamespaceExists) Error() string {
 	return buf.String()
 }
 
+// ErrNamespaceNotExist is the struct returned when a client attempts to delete
+// a namespace that doesn't exist.
+type ErrNamespaceNotExist struct {
+	Namespace string
+}
+
+func (e ErrNamespaceNotExist) Error() string {
+	buf := new(bytes.Buffer)
+	buf.WriteString("namespace ")
+	buf.WriteString(e.Namespace)
+	buf.WriteString(" does not exist")
+	return buf.String()
+}
+
+// ErrNamespaceAlreadyTerminating is the struct returned when a client attempts
+// to delete a namespace that is already in process of termination.
+type ErrNamespaceAlreadyTerminating struct {
+	Namespace string
+}
+
+func (e ErrNamespaceAlreadyTerminating) Error() string {
+	buf := new(bytes.Buffer)
+	buf.WriteString("namespace ")
+	buf.WriteString(e.Namespace)
+	buf.WriteString(" already in process of termination.")
+	return buf.String()
+}
+
 // NamespaceBackend defines methods for working with registry namespaces.
 type NamespaceBackend interface {
 	NamespaceCreater
