@@ -20,28 +20,29 @@ import (
 	"github.com/opencontainers/go-digest"
 )
 
-type packageUploader interface {
+// PackageUploader defines methods for uploading packages to a registry.
+type PackageUploader interface {
 	InitPackageUpload(InitPackageUploadParams) InitPackageUploadResp
 }
 
 // InitPackageUploadParams defines parameters for initiating the upload of
 // a package.
 type InitPackageUploadParams struct {
-	Namespace string
-	Repo      string
+	Namespace string `json:"namespace"`
+	Repo      string `json:"repo"`
 	Blobs     []struct {
-		Digest    digest.Digest
-		MediaType string
-	}
+		Digest    digest.Digest `json:"digest"`
+		MediaType string        `json:"mediaType"`
+	} `json:"blobs"`
 }
 
 // InitPackageUploadResp defines the response returned from InitPackageUpload.
 type InitPackageUploadResp struct {
-	MaxChunkSize uint64
-	Error        error
+	MaxChunkSize uint64 `json:"maxChunkSize"`
+	Error        error  `json:"-"`
 	UploadIDs    []struct {
-		Digest   digest.Digest
-		UploadID string
-		Expires  *time.Time
-	}
+		Digest   digest.Digest `json:"digest"`
+		UploadID string        `json:"uploadID"`
+		Expires  *time.Time    `json:"expires"`
+	} `json:"uploadIDs"`
 }
