@@ -23,8 +23,8 @@ type NamespaceBackend interface {
 
 // NamespaceCreater defines methods for creating registry namespaces.
 type NamespaceCreater interface {
-	CreateNamespace(NamespaceConfig) error
-	CreateNamespaces([]NamespaceConfig) error
+	CreateNamespace(CreateNamespaceParams) error
+	BatchCreateNamespace(BatchCreateNamespaceParams) error
 }
 
 // NamespaceDeleter defines methods for deleting registry namespaces.
@@ -41,13 +41,16 @@ type NamespaceGetter interface {
 	GetAllNamespaces() (*[]Namespace, error)
 }
 
-// NamespaceConfig defines parameters for creating a registry namespace.
-type NamespaceConfig struct {
+// CreateNamespaceParams defines parameters for creating a registry namespace.
+type CreateNamespaceParams struct {
 	Name         string
 	StorageLimit uint64
 	RepoLimit    uint64
 	Labels       map[string]string
 }
+
+// BatchCreateNamespaceParams is a wrapper around CreateNamespaceParams.
+type BatchCreateNamespaceParams []CreateNamespaceParams
 
 // Namespace contains information about registry namespaces.
 type Namespace struct {
