@@ -23,7 +23,7 @@ import (
 // PackageUploader defines methods for uploading packages to a registry.
 type PackageUploader interface {
 	InitPackageUpload(InitPackageUploadParams) InitPackageUploadResp
-	UploadBlobChunk(UploadBlobChunkParams)
+	UploadBlobChunk(UploadBlobChunkParams) UploadBlobChunkResp
 }
 
 // InitPackageUploadParams defines parameters for initiating the upload of
@@ -50,6 +50,13 @@ type InitPackageUploadResp struct {
 	} `json:"uploadIDs"`
 }
 
+// UploadBlobChunkParams defines parameters for UploadBlobChunk.
 type UploadBlobChunkParams struct {
-	Part uint64
+	Part   uint64
+	Digest digest.Digest
+}
+
+// UploadBlobChunkResp defines the response returned from UploadBlobChunk.
+type UploadBlobChunkResp struct {
+	Error error
 }
