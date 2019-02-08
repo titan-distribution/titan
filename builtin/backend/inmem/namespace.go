@@ -65,3 +65,29 @@ func (b *Backend) BatchNewNamespace(p core.BatchNewNamespaceP) core.BatchNewName
 	}
 	return resp
 }
+
+// DelNamespace deletes a namespace from the registry.
+func (b *Backend) DelNamespace(p core.DelNamespaceP) core.DelNamespaceR {
+	var resp core.DelNamespaceR
+
+	fn := func(tx *buntdb.Tx) error {
+		baseKey := join("namespace", p.Name, "status")
+		status, err := tx.Get(baseKey)
+		if err == buntdb.ErrNotFound {
+			return core.ErrNamespaceNotExist{Namespace: p.Name}
+		}
+
+		if status == "terminating" {
+			return core.ErrNamespaceAlreadyTerminating{Namespace: p.Name}
+		}
+
+		tx.Set(baseKey, "terminating", nil)
+		return nil
+	}
+
+	err := b.db.Update(fn)
+	if err != nil {
+		resp.Error = err
+	}
+	return resp
+}

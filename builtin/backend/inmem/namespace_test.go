@@ -108,3 +108,51 @@ func TestBatchNewNamespace(t *testing.T) {
 	}
 
 }
+
+func TestDeleteNamespace(t *testing.T) {
+	db, err := buntdb.Open(":memory:")
+	if err != nil {
+		t.Fatal("could not open database")
+	}
+
+	backend := Backend{db: db}
+
+	newParams := core.NewNamespaceP{
+		Name:         "test-ns",
+		StorageLimit: 1234567,
+		RepoLimit:    50,
+		Labels: map[string]string{
+			"label-one":   "key-one",
+			"label-two":   "key-two",
+			"label-three": "key-three",
+		},
+	}
+
+	newResp := backend.NewNamespace(newParams)
+	if newResp.Error != nil {
+		t.Fatal("failed to create namespace")
+	}
+
+	delParams := core.DelNamespaceP{
+		Name: "test-ns",
+	}
+
+	delResp := backend.DelNamespace(delParams)
+	if delResp.Error != nil {
+		t.Fatal("failed to delete namespace")
+	}
+
+	duplicateDelResp := backend.DelNamespace(delParams)
+	if duplicateDelResp.Error == nil {
+		t.Fatal("namespace terminated more than one time")
+	}
+
+	notExistDelParams := core.DelNamespaceP{
+		Name: "unknown",
+	}
+	notExistResp := backend.DelNamespace(notExistDelParams)
+	if notExistResp.Error == nil {
+		t.Fatal("nonexistent namespace deleted")
+	}
+
+}
