@@ -22,9 +22,11 @@ import (
 
 // NewNamespace creates a registry namespace.
 func (b *Backend) NewNamespace(p core.NewNamespaceP) core.NewNamespaceR {
+	var resp core.NewNamespaceR
 	fields := make(map[string]string)
 	fields["storage-limit"] = string(p.StorageLimit)
 	fields["repo-limit"] = string(p.RepoLimit)
+	fields["status"] = "active"
 
 	for k, v := range p.Labels {
 		key := join("label", k)
@@ -32,17 +34,31 @@ func (b *Backend) NewNamespace(p core.NewNamespaceP) core.NewNamespaceR {
 	}
 
 	fn := func(tx *buntdb.Tx) error {
-		for k, v := range fields {
-			fullKey := join("namespace", p.Name, k)
-			tx.Set(fullKey, v, nil)
+		baseKey := join("namespace", p.Name)
+		_, err := tx.Get(baseKey + ":status")
+		if err != buntdb.ErrNotFound {
+			return core.ErrNamespaceExists{Namespace: p.Name}
 		}
 
+		for k, v := range fields {
+			fullKey := join(baseKey, k)
+			tx.Set(fullKey, v, nil)
+		}
 		return nil
 	}
 
-	b.db.Update(fn)
-	return core.NewNamespaceR{Error: nil}
+	err := b.db.Update(fn)
+	if err != nil {
+		resp.Error = err
+	}
+	return resp
 }
 
-//func batchNewNamespace(db *buntdb.DB, p core.BatchNewNamespaceP) core.BatchNewNamespaceR {
+// BatchNewNamespace creates multiple namespaces in the registry.
+//func (b *Backend) BatchNewNamespace(p core.BatchNewNamespaceP) core.BatchNewNamespaceR {
+//	for _, ns := range p.Namespaces {
+//		resp := b.NewNamespace(ns)
+//		if resp.Error != nil {
+//		}
+//	}
 //}

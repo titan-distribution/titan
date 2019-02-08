@@ -41,5 +41,13 @@ func TestNewNamespace(t *testing.T) {
 		},
 	}
 
-	backend.NewNamespace(params)
+	resp := backend.NewNamespace(params)
+	if resp.Error != nil {
+		t.Fatal("failed to create namespace")
+	}
+
+	resp = backend.NewNamespace(params)
+	if resp.Error == nil {
+		t.Fatal("duplicate namespace created")
+	}
 }
