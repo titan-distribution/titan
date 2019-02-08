@@ -55,10 +55,13 @@ func (b *Backend) NewNamespace(p core.NewNamespaceP) core.NewNamespaceR {
 }
 
 // BatchNewNamespace creates multiple namespaces in the registry.
-//func (b *Backend) BatchNewNamespace(p core.BatchNewNamespaceP) core.BatchNewNamespaceR {
-//	for _, ns := range p.Namespaces {
-//		resp := b.NewNamespace(ns)
-//		if resp.Error != nil {
-//		}
-//	}
-//}
+func (b *Backend) BatchNewNamespace(p core.BatchNewNamespaceP) core.BatchNewNamespaceR {
+	var resp core.BatchNewNamespaceR
+	for _, ns := range p.Namespaces {
+		err := b.NewNamespace(ns)
+		if err.Error != nil {
+			resp.Errors = append(resp.Errors, err.Error)
+		}
+	}
+	return resp
+}
