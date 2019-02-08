@@ -14,6 +14,24 @@
 
 package core
 
+import (
+	"bytes"
+)
+
+// ErrNamespaceExists is the struct returned when a client attempts to create
+// a new namespace with a name that already exists.
+type ErrNamespaceExists struct {
+	Namespace string
+}
+
+func (e ErrNamespaceExists) Error() string {
+	buf := new(bytes.Buffer)
+	buf.WriteString("namespace ")
+	buf.WriteString(e.Namespace)
+	buf.WriteString(" already exists")
+	return buf.String()
+}
+
 // NamespaceBackend defines methods for working with registry namespaces.
 type NamespaceBackend interface {
 	NamespaceCreater
