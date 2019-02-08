@@ -18,27 +18,13 @@ package core
 type NamespaceBackend interface {
 	NamespaceCreater
 	NamespaceDeleter
-	NamespaceGetter
+	NamespaceFinder
 }
 
 // NamespaceCreater defines methods for creating registry namespaces.
 type NamespaceCreater interface {
 	NewNamespace(NewNamespaceP) NewNamespaceR
 	BatchNewNamespace(BatchNewNamespaceP) BatchNewNamespaceR
-}
-
-// NamespaceDeleter defines methods for deleting registry namespaces.
-type NamespaceDeleter interface {
-	DeleteNamespace(name string) error
-	DeleteNamespacesWithLabel(key, value string) (deleted []string, err error)
-	DeleteAllNamespaces() error
-}
-
-// NamespaceGetter defines methods for fetching registry namespaces.
-type NamespaceGetter interface {
-	GetNamespace(name string) (*Namespace, error)
-	GetNamespacesWithLabel(key, value string) (*[]Namespace, error)
-	GetAllNamespaces() (*[]Namespace, error)
 }
 
 // NewNamespaceP defines parameters for creating a registry namespace.
@@ -60,6 +46,72 @@ type BatchNewNamespaceP []NewNamespaceP
 // BatchNewNamespaceR defines the response returned from BatchNewNamespace.
 type BatchNewNamespaceR struct {
 	Error error
+}
+
+// NamespaceDeleter defines methods for deleting registry namespaces.
+type NamespaceDeleter interface {
+	DelNamespace(DelNamespaceP) DelNamespaceR
+	BatchDelNamespace(BatchDelNamespaceP) BatchDelNamespaceR
+	PurgeNamespaces() PurgeNamespacesR
+}
+
+// DelNamespaceP defines parameters for DelNamespace.
+type DelNamespaceP struct {
+	Name string
+}
+
+// DelNamespaceR defines the response returned from DelNamespace.
+type DelNamespaceR struct {
+	Error error
+}
+
+// BatchDelNamespaceP defines parameters for BatchDelNamespace.
+type BatchDelNamespaceP []DelNamespaceP
+
+// BatchDelNamespaceR defines the response returned from BatchDelNamespace.
+type BatchDelNamespaceR struct {
+	Error error
+}
+
+// PurgeNamespacesR defines the response returned from PurgeNamespace.
+type PurgeNamespacesR struct {
+	Error error
+}
+
+// NamespaceFinder defines methods for fetching registry namespaces.
+type NamespaceFinder interface {
+	FindNamespace(FindNamespaceP) FindNamespaceR
+	FindNamespaces(FindNamespacesP) FindNamespacesR
+	AllNamespaces() AllNamespacesR
+}
+
+// FindNamespaceP defines parameters for FindNamespace.
+type FindNamespaceP struct {
+	Name string
+}
+
+// FindNamespaceR defines the response returned from FindNamespace.
+type FindNamespaceR struct {
+	Namespace Namespace
+	Error     error
+}
+
+// FindNamespacesP defines parameters for FindNamespaces.
+type FindNamespacesP struct {
+	LabelKey   string
+	LabelValue string
+}
+
+// FindNamespacesR defines the response returned from FindNamespaces.
+type FindNamespacesR struct {
+	Namespaces []Namespace
+	Error      error
+}
+
+// AllNamespacesR defines the response returned from AllNamespaces.
+type AllNamespacesR struct {
+	Namespaces []Namespace
+	Error      error
 }
 
 // Namespace contains information about registry namespaces.
