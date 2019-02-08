@@ -22,8 +22,29 @@ type RepoBackend interface {
 
 // RepoCreater defines methods for creating repositories.
 type RepoCreater interface {
-	CreateRepo(*RepoConfig) error
-	CreateRepos(*[]RepoConfig) error
+	NewRepo(NewRepoP) NewRepoR
+	BatchNewRepo(BatchNewRepoP) BatchNewRepoR
+}
+
+// NewRepoP defines parameters for NewRepo.
+type NewRepoP struct {
+	Name         string
+	Namespace    string
+	StorageLimit uint64
+	Labels       map[string]string
+}
+
+// NewRepoR defines the response returned from BatchNewRepo.
+type NewRepoR struct {
+	Error error
+}
+
+// BatchNewRepoP defines parameters for BatchNewRepo.
+type BatchNewRepoP []NewRepoP
+
+// BatchNewRepoR defines the response returned from BatchNewRepo.
+type BatchNewRepoR struct {
+	Error error
 }
 
 // RepoDeleter defines methods for deleting repositories.
@@ -53,8 +74,4 @@ type Repo struct {
 
 // RepoConfig defines parameters for creating a repository.
 type RepoConfig struct {
-	Name         string
-	Namespace    string
-	StorageLimit uint64
-	Labels       map[string]string
 }
