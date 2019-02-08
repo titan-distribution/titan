@@ -22,10 +22,6 @@ import (
 
 // NewNamespace creates a registry namespace.
 func (b *Backend) NewNamespace(p core.NewNamespaceP) core.NewNamespaceR {
-	return newNamespace(b.db, p)
-}
-
-func newNamespace(db *buntdb.DB, p core.NewNamespaceP) core.NewNamespaceR {
 	fields := make(map[string]string)
 	fields["storage-limit"] = string(p.StorageLimit)
 	fields["repo-limit"] = string(p.RepoLimit)
@@ -44,8 +40,9 @@ func newNamespace(db *buntdb.DB, p core.NewNamespaceP) core.NewNamespaceR {
 		return nil
 	}
 
-	db.Update(fn)
+	b.db.Update(fn)
 	return core.NewNamespaceR{Error: nil}
 }
 
-//func batchCreateNamespace(db *buntdb.DB, cfgs []core.NamespaceConfig)
+//func batchNewNamespace(db *buntdb.DB, p core.BatchNewNamespaceP) core.BatchNewNamespaceR {
+//}
