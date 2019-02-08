@@ -30,7 +30,7 @@ func TestCreateRepo(t *testing.T) {
 
 	backend := Backend{db: db}
 
-	repoConf := core.RepoConfig{
+	params := core.NewRepoP{
 		Name:         "test-repo",
 		Namespace:    "test-ns",
 		StorageLimit: 1234567,
@@ -41,5 +41,5 @@ func TestCreateRepo(t *testing.T) {
 		},
 	}
 
-	backend.CreateRepo(repoConf)
+	backend.NewRepo(params)
 }

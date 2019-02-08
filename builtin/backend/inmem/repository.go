@@ -20,29 +20,25 @@ import (
 	"github.com/tidwall/buntdb"
 )
 
-// CreateRepo registers a new repository in the backend.
-func (b *Backend) CreateRepo(cfg core.RepoConfig) error {
-	return createRepo(b.db, cfg)
-}
-
-func createRepo(db *buntdb.DB, cfg core.RepoConfig) error {
+// NewRepo registers a new repository in the backend.
+func (b *Backend) NewRepo(p core.NewRepoP) core.NewRepoR {
 	fields := make(map[string]string)
-	fields["namespace"] = cfg.Namespace
-	fields["storage-limit"] = string(cfg.StorageLimit)
+	fields["namespace"] = p.Namespace
+	fields["storage-limit"] = string(p.StorageLimit)
 
-	for k, v := range cfg.Labels {
+	for k, v := range p.Labels {
 		key := join("label", k)
 		fields[key] = v
 	}
 
 	fn := func(tx *buntdb.Tx) error {
 		for k, v := range fields {
-			fullKey := join("repo", cfg.Name, k)
+			fullKey := join("repo", p.Name, k)
 			tx.Set(fullKey, v, nil)
 		}
 		return nil
 	}
 
-	db.Update(fn)
-	return nil
+	b.db.Update(fn)
+	return core.NewRepoR{Error: nil}
 }
