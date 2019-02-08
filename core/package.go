@@ -23,6 +23,7 @@ import (
 // PackageUploader defines methods for uploading packages to a registry.
 type PackageUploader interface {
 	InitPackageUpload(InitPackageUploadParams) InitPackageUploadResp
+	UploadBlobChunk(UploadBlobChunkParams)
 }
 
 // InitPackageUploadParams defines parameters for initiating the upload of
@@ -41,8 +42,14 @@ type InitPackageUploadResp struct {
 	MaxChunkSize uint64 `json:"maxChunkSize"`
 	Error        error  `json:"-"`
 	UploadIDs    []struct {
-		Digest   digest.Digest `json:"digest"`
-		UploadID string        `json:"uploadID"`
-		Expires  *time.Time    `json:"expires"`
+		Namespace string        `json:"namespace"`
+		Repo      string        `json:"repo"`
+		Digest    digest.Digest `json:"digest"`
+		UploadID  string        `json:"uploadID"`
+		Expires   *time.Time    `json:"expires"`
 	} `json:"uploadIDs"`
+}
+
+type UploadBlobChunkParams struct {
+	Part uint64
 }
